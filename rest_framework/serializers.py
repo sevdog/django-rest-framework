@@ -597,12 +597,18 @@ class ListSerializer(BaseSerializer):
     }
 
     def __init__(self, *args, **kwargs):
-        self.child = kwargs.pop('child', copy.deepcopy(self.child))
+        child = kwargs.pop('child', None)
+        if child is None and self.child is not None:
+            # only evaluate copy when required
+            child = copy.deepcopy(self.child)
+
+        assert child is not None, '`child` is a required argument.'
+        assert not inspect.isclass(child), '`child` has not been instantiated.'
+        assert isinstance(child, BaseSerializer), '`child` has to be a `Serializer`'
+        self.child = child
         self.allow_empty = kwargs.pop('allow_empty', True)
         self.max_length = kwargs.pop('max_length', None)
         self.min_length = kwargs.pop('min_length', None)
-        assert self.child is not None, '`child` is a required argument.'
-        assert not inspect.isclass(self.child), '`child` has not been instantiated.'
         super().__init__(*args, **kwargs)
         self.child.bind(field_name='', parent=self)
 

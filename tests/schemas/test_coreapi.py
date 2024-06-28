@@ -65,7 +65,7 @@ class AnotherSerializerWithDictField(serializers.Serializer):
 
 class AnotherSerializerWithListFields(serializers.Serializer):
     a = serializers.ListField(child=serializers.IntegerField())
-    b = serializers.ListSerializer(child=serializers.CharField())
+    b = serializers.ListSerializer(child=EmptySerializer())
 
 
 class AnotherSerializer(serializers.Serializer):
